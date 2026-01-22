@@ -1,31 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // Using existing dependency
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Car,
   Sparkles,
   ShieldCheck,
-  Droplets,
   MapPin,
   Phone,
   Mail,
-  Clock,
   ChevronRight,
   Star,
   Menu,
   X,
-  Calendar
+  Check
 } from 'lucide-react';
 import './App.css';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navLinks = [
     { name: 'Services', href: '#services' },
@@ -34,58 +25,69 @@ const Navbar = () => {
     { name: 'Contact', href: '#contact' },
   ];
 
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, []);
+
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+    <nav className="navbar">
       <div className="container nav-content">
         <a href="#" className="logo-group" aria-label="Sunrise Detailing Home">
           <div className="logo-icon">
-            <Sparkles size={28} strokeWidth={2.5} />
+            <Sparkles size={24} strokeWidth={2.5} aria-hidden="true" />
           </div>
-          <span className="logo-text">Sunrise<span style={{ color: 'var(--color-accent)' }}>.</span></span>
+          <span>Sunrise<span style={{ color: 'var(--color-accent)' }}>.</span></span>
         </a>
 
-        <div className="nav-links desktop">
+        <div className="nav-links">
           {navLinks.map(link => (
             <a key={link.name} href={link.href}>{link.name}</a>
           ))}
-          <button className="btn-primary">Book Now</button>
+          <a href="#contact" className="btn btn-primary">Book Now</a>
         </div>
 
         <button
           className="mobile-toggle"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? "Close Menu" : "Open Menu"}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
         >
-          {mobileMenuOpen ? <X /> : <Menu />}
+          {mobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
         </button>
       </div>
 
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="mobile-menu"
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              background: 'white',
-              padding: '2rem',
-              boxShadow: 'var(--shadow-md)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-              textAlign: 'center',
-              zIndex: 49
-            }}
+            role="menu"
           >
             {navLinks.map(link => (
-              <a key={link.name} href={link.href} onClick={() => setMobileMenuOpen(false)} style={{ fontWeight: 600 }}>{link.name}</a>
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                role="menuitem"
+              >
+                {link.name}
+              </a>
             ))}
-            <button className="btn-primary" style={{ width: '100%' }}>Book Now</button>
+            <a
+              href="#contact"
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: 'var(--space-2)' }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Book Now
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
@@ -97,36 +99,37 @@ const Hero = () => {
   return (
     <section className="hero">
       <div className="container hero-content">
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="hero-text"
-        >
+        <div className="hero-text">
           <div className="hero-badge">
-            <Star size={14} fill="currentColor" />
-            <span>Waco's Premier Auto Care</span>
+            <Star size={14} fill="currentColor" aria-hidden="true" />
+            <span>Elm Mott's Premier Auto Care</span>
           </div>
-          <h1>Reviving the <br /><span style={{ color: 'var(--color-accent)' }}>Soul</span> of Your Machine.</h1>
-          <p>Experience detailing elevated to an art form. From classic restorations to daily driver protection, we bring showroom brilliance to your driveway.</p>
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <button className="btn-primary">View Packages <ChevronRight size={18} /></button>
-            <button className="btn-secondary">Our Work</button>
+          <h1>
+            Reviving the <br />
+            <span>Soul</span> of Your Machine.
+          </h1>
+          <p>
+            Experience detailing elevated to an art form. From classic restorations
+            to daily driver protection, we bring showroom brilliance to your driveway.
+          </p>
+          <div className="hero-buttons">
+            <a href="#packages" className="btn btn-primary">
+              View Packages <ChevronRight size={18} aria-hidden="true" />
+            </a>
+            <a href="#about" className="btn btn-secondary">Our Work</a>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="hero-image-wrapper"
-        >
+        <div className="hero-image-wrapper">
           <img
-            src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&q=80&w=1600"
-            alt="Vintage Car Detailing"
+            src="https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&q=80&w=800"
+            alt="Vintage car being detailed with professional care"
             className="hero-image"
+            width="800"
+            height="600"
+            loading="eager"
           />
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -137,44 +140,40 @@ const Services = () => {
     {
       title: "Paint Correction",
       desc: "Eliminating swirls, scratches, and oxidation to reveal pure reflection.",
-      icon: <Car size={32} />
+      icon: <Car size={28} aria-hidden="true" />
     },
     {
       title: "Interior Deep Clean",
       desc: "Leather conditioning, steam cleaning, and meticulous extraction.",
-      icon: <Sparkles size={32} />
+      icon: <Sparkles size={28} aria-hidden="true" />
     },
     {
       title: "Ceramic Coating",
       desc: "Long-term hydrophobic protection that locks in the shine for years.",
-      icon: <ShieldCheck size={32} />
+      icon: <ShieldCheck size={28} aria-hidden="true" />
     }
   ];
 
   return (
     <section id="services" className="services section">
       <div className="container">
-        <div className="text-center" style={{ marginBottom: '4rem' }}>
-          <span style={{ color: 'var(--color-accent)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.875rem' }}>Our Expertise</span>
-          <h2 style={{ fontSize: '2.5rem', marginTop: '0.5rem' }}>Meticulous Attention to Detail</h2>
-        </div>
+        <header className="section-header">
+          <p className="section-eyebrow">Our Expertise</p>
+          <h2 className="section-title">Meticulous Attention to Detail</h2>
+        </header>
 
         <div className="services-grid">
           {services.map((s, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ y: -8 }}
-              className="service-card"
-            >
+            <article key={i} className="service-card">
               <div className="icon-box">
                 {s.icon}
               </div>
               <h3>{s.title}</h3>
               <p>{s.desc}</p>
-              <a href="#" style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--color-accent)', fontWeight: 600 }}>
-                Learn More <ChevronRight size={16} />
+              <a href="#contact" className="service-card-link">
+                Learn More <ChevronRight size={16} aria-hidden="true" />
               </a>
-            </motion.div>
+            </article>
           ))}
         </div>
       </div>
@@ -182,58 +181,258 @@ const Services = () => {
   );
 };
 
+const BeforeAfter = () => {
+  const [sliderPosition, setSliderPosition] = useState(50);
+  const containerRef = useRef(null);
+  const isDragging = useRef(false);
+
+  const handleMove = (clientX) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPosition(percentage);
+  };
+
+  const handleMouseDown = () => {
+    isDragging.current = true;
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging.current) {
+      handleMove(e.clientX);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    handleMove(e.touches[0].clientX);
+  };
+
+  useEffect(() => {
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return (
+    <section className="section" style={{ background: 'var(--color-surface)' }}>
+      <div className="container">
+        <header className="section-header">
+          <p className="section-eyebrow">The Transformation</p>
+          <h2 className="section-title">See the Difference</h2>
+          <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--space-2)', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+            Drag the slider to reveal the magic of professional detailing.
+          </p>
+        </header>
+
+        <div
+          ref={containerRef}
+          className="before-after-container"
+          onMouseDown={handleMouseDown}
+          onTouchMove={handleTouchMove}
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '700px',
+            margin: '0 auto',
+            aspectRatio: '1 / 1',
+            borderRadius: 'var(--radius-xl)',
+            overflow: 'hidden',
+            cursor: 'ew-resize',
+            boxShadow: 'var(--shadow-lg)',
+            touchAction: 'pan-y'
+          }}
+        >
+          {/* After image (background) */}
+          <img
+            src="/after-interior.png"
+            alt="After professional detailing"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
+
+          {/* Before image (clipped) */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${sliderPosition}%`,
+            height: '100%',
+            overflow: 'hidden'
+          }}>
+            <img
+              src="/before-interior.png"
+              alt="Before detailing - dirty interior"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: containerRef.current ? containerRef.current.offsetWidth : '100%',
+                height: '100%',
+                objectFit: 'cover',
+                maxWidth: 'none'
+              }}
+            />
+          </div>
+
+          {/* Slider handle */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: `${sliderPosition}%`,
+            transform: 'translateX(-50%)',
+            width: '4px',
+            height: '100%',
+            background: 'white',
+            boxShadow: '0 0 10px rgba(0,0,0,0.3)',
+            zIndex: 10
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              background: 'white',
+              boxShadow: 'var(--shadow-md)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2px'
+            }}>
+              <ChevronRight size={16} style={{ transform: 'rotate(180deg)', color: 'var(--color-primary)' }} />
+              <ChevronRight size={16} style={{ color: 'var(--color-primary)' }} />
+            </div>
+          </div>
+
+          {/* Labels */}
+          <div style={{
+            position: 'absolute',
+            bottom: 'var(--space-4)',
+            left: 'var(--space-4)',
+            background: 'rgba(0,0,0,0.7)',
+            color: 'white',
+            padding: 'var(--space-2) var(--space-3)',
+            borderRadius: 'var(--radius-md)',
+            fontSize: '0.875rem',
+            fontWeight: 600
+          }}>
+            Before
+          </div>
+          <div style={{
+            position: 'absolute',
+            bottom: 'var(--space-4)',
+            right: 'var(--space-4)',
+            background: 'var(--color-accent)',
+            color: 'white',
+            padding: 'var(--space-2) var(--space-3)',
+            borderRadius: 'var(--radius-md)',
+            fontSize: '0.875rem',
+            fontWeight: 600
+          }}>
+            After
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Packages = () => {
+  const packages = [
+    {
+      name: "The Daily Driver",
+      price: "$150",
+      description: "Perfect for regular maintenance.",
+      features: [
+        "Exterior Hand Wash",
+        "Wheel & Tire Detail",
+        "Interior Vacuum",
+        "Windows & Mirrors"
+      ],
+      highlighted: false
+    },
+    {
+      name: "The Enthusiast",
+      price: "$295",
+      description: "The deep clean your car deserves.",
+      features: [
+        "All Daily Driver Features",
+        "Clay Bar Treatment",
+        "6-Month Sealant",
+        "Leather Conditioning",
+        "Steam Clean Carpets"
+      ],
+      highlighted: true
+    },
+    {
+      name: "The Showroom",
+      price: "$550+",
+      description: "Complete restoration & protection.",
+      features: [
+        "All Enthusiast Features",
+        "1-Step Paint Correction",
+        "Ceramic Coating (1 Year)",
+        "Engine Bay Detail"
+      ],
+      highlighted: false
+    }
+  ];
+
   return (
     <section id="packages" className="section" style={{ background: 'var(--color-bg)' }}>
       <div className="container">
-        <div className="text-center" style={{ marginBottom: '4rem' }}>
-          <h2>Curated Packages</h2>
-          <p>Simple pricing. No hidden fees. Just exceptional results.</p>
-        </div>
+        <header className="section-header">
+          <h2 className="section-title">Curated Packages</h2>
+          <p style={{ color: 'var(--color-text-muted)', marginTop: 'var(--space-2)' }}>
+            Simple pricing. No hidden fees. Just exceptional results.
+          </p>
+        </header>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          <div className="package-card">
-            <h3>The Daily Driver</h3>
-            <div className="price">$150</div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-light)' }}>Perfect for regular maintenance.</p>
-            <ul className="feature-list">
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Exterior Hand Wash</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Wheel & Tire Detail</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Interior Vacuum</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Windows & Mirrors</li>
-            </ul>
-            <button className="btn-secondary" style={{ width: '100%', marginTop: 'auto' }}>Select This Plan</button>
-          </div>
-
-          <div className="package-card highlight">
-            <div style={{ position: 'absolute', top: 0, right: 0, background: 'var(--color-accent)', color: 'white', padding: '0.25rem 1rem', borderBottomLeftRadius: '10px', fontSize: '0.8rem', fontWeight: 600 }}>
-              MOST POPULAR
-            </div>
-            <h3>The enthusiast</h3>
-            <div className="price">$295</div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-light)' }}>The deep clean your car deserves.</p>
-            <ul className="feature-list">
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> All Daily Driver Features</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Clay Bar Treatment</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> 6-Month Sealant</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Leather Conditioning</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Steam Clean Carpets</li>
-            </ul>
-            <button className="btn-primary" style={{ width: '100%', marginTop: 'auto' }}>Select This Plan</button>
-          </div>
-
-          <div className="package-card">
-            <h3>The Showroom</h3>
-            <div className="price">$550+</div>
-            <p style={{ fontSize: '0.9rem', color: 'var(--color-text-light)' }}>Complete restoration & protection.</p>
-            <ul className="feature-list">
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> All Enthusiast Features</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> 1-Step Paint Correction</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Ceramic Coating (1 Year)</li>
-              <li><Star size={16} fill="var(--color-accent)" stroke="none" /> Engine Bay Detail</li>
-            </ul>
-            <button className="btn-secondary" style={{ width: '100%', marginTop: 'auto' }}>Select This Plan</button>
-          </div>
+        <div className="packages-grid">
+          {packages.map((pkg, i) => (
+            <article
+              key={i}
+              className={`package-card ${pkg.highlighted ? 'highlight' : ''}`}
+            >
+              {pkg.highlighted && (
+                <div className="package-badge">Most Popular</div>
+              )}
+              <h3>{pkg.name}</h3>
+              <div className="price">{pkg.price}</div>
+              <p className="package-description">{pkg.description}</p>
+              <ul className="feature-list">
+                {pkg.features.map((feature, j) => (
+                  <li key={j}>
+                    <Check size={18} aria-hidden="true" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="#contact"
+                className={`btn ${pkg.highlighted ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ width: '100%' }}
+              >
+                Select This Plan
+              </a>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -242,33 +441,36 @@ const Packages = () => {
 
 const AboutSection = () => {
   return (
-    <section id="about" className="section" style={{ background: 'white' }}>
+    <section id="about" className="section" style={{ background: 'var(--color-surface)' }}>
       <div className="container">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h2>Born in Waco. Raised on Vinyl & Gasoline.</h2>
+        <div className="about-content">
+          <div className="about-text">
+            <h2>Born in Texas. Raised on Vinyl & Gasoline.</h2>
             <p>
               Sunrise Detailing isn't just a business; it's a tribute to the golden age of motoring.
               We believe that every car has a story, and our job is to make sure it shines.
-              Using traditional techniques combined with modern technology, we treat your vehicle with the respect it deserves.
+              Using traditional techniques combined with modern technology, we treat your vehicle
+              with the respect it deserves.
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '2rem' }}>
-              <div>
-                <h4 style={{ fontSize: '2rem', marginBottom: '0' }}>5+</h4>
-                <span style={{ fontSize: '0.9rem' }}>Years Experience</span>
+            <div className="stats-grid">
+              <div className="stat-item">
+                <h4>5+</h4>
+                <span>Years Experience</span>
               </div>
-              <div>
-                <h4 style={{ fontSize: '2rem', marginBottom: '0' }}>1k+</h4>
-                <span style={{ fontSize: '0.9rem' }}>Cars Detailed</span>
+              <div className="stat-item">
+                <h4>1k+</h4>
+                <span>Cars Detailed</span>
               </div>
             </div>
           </div>
           <div className="hero-image-wrapper">
             <img
-              src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=1200"
-              alt="Detailing Process"
-              className="hero-image"
-              style={{ transform: 'rotate(-2deg)' }}
+              src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800"
+              alt="Professional car detailing in progress"
+              className="about-image"
+              width="800"
+              height="600"
+              loading="lazy"
             />
           </div>
         </div>
@@ -282,19 +484,24 @@ const Contact = () => {
     <section id="contact" className="section">
       <div className="container">
         <div className="banner">
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', position: 'relative', zIndex: 10 }}>
-            <h2>Ready for that New Car Feeling?</h2>
-            <p>Schedule your appointment today. Spaces fill up fast.</p>
-            <button className="btn" style={{ background: 'white', color: 'var(--color-primary)' }}>Book Appointment</button>
+          <h2>Ready for that New Car Feeling?</h2>
+          <p>Schedule your appointment today. Spaces fill up fast.</p>
+          <a href="tel:+12549004049" className="btn">Book Appointment</a>
 
-            <div style={{ display: 'flex', gap: '2rem', marginTop: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.9 }}>
-                <Phone size={20} /> (254) 555-0199
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.9 }}>
-                <MapPin size={20} /> 402 Austin Ave, Waco, TX
-              </div>
-            </div>
+          <div className="contact-info">
+            <a href="tel:+12549004049" className="contact-item">
+              <Phone size={18} aria-hidden="true" />
+              (254) 900-4049
+            </a>
+            <a
+              href="https://maps.google.com/?q=2417+N+Katy+Rd+Elm+Mott+TX+76640"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-item"
+            >
+              <MapPin size={18} aria-hidden="true" />
+              2417 N Katy Rd, Elm Mott, TX
+            </a>
           </div>
         </div>
       </div>
@@ -303,37 +510,39 @@ const Contact = () => {
 };
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="footer">
       <div className="container footer-content">
         <div className="footer-brand">
-          <div className="logo-group" style={{ marginBottom: '1rem' }}>
-            <Sparkles size={24} color="var(--color-accent)" />
+          <div className="logo-group">
+            <Sparkles size={20} color="var(--color-accent)" aria-hidden="true" />
             <span style={{ color: 'white' }}>Sunrise.</span>
           </div>
-          <p style={{ color: 'rgba(255,255,255,0.7)' }}>
+          <p>
             Premium auto detailing services in the heart of Texas.
             Quality work, honest pricing, and a passion for perfection.
           </p>
         </div>
 
-        <div className="footer-links">
+        <nav className="footer-links" aria-label="Footer navigation">
           <h4>Navigation</h4>
           <a href="#services">Services</a>
           <a href="#packages">Packages</a>
           <a href="#about">About Us</a>
           <a href="#contact">Contact</a>
-        </div>
+        </nav>
 
         <div className="footer-contact">
           <h4>Visit Us</h4>
-          <p style={{ display: 'flex', gap: '0.5rem' }}><MapPin size={16} /> Waco, Texas</p>
-          <p style={{ display: 'flex', gap: '0.5rem' }}><Phone size={16} /> (254) 555-0199</p>
-          <p style={{ display: 'flex', gap: '0.5rem' }}><Mail size={16} /> shine@sunrisedetailing.com</p>
+          <p><MapPin size={16} aria-hidden="true" /> Elm Mott, Texas</p>
+          <p><Phone size={16} aria-hidden="true" /> (254) 900-4049</p>
+          <p><Mail size={16} aria-hidden="true" /> danielphillips1206@icloud.com</p>
         </div>
       </div>
       <div className="container footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Sunrise Detailing. All rights reserved.</p>
+        <p>© {currentYear} Sunrise Detailing. All rights reserved.</p>
       </div>
     </footer>
   );
@@ -341,15 +550,18 @@ const Footer = () => {
 
 function App() {
   return (
-    <div className="app-wrapper">
+    <>
       <Navbar />
-      <Hero />
-      <Services />
-      <Packages />
-      <AboutSection />
-      <Contact />
+      <main>
+        <Hero />
+        <Services />
+        <BeforeAfter />
+        <Packages />
+        <AboutSection />
+        <Contact />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 }
 
