@@ -36,11 +36,11 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="container nav-content">
-        <a href="#" className="logo-group" aria-label="Sunrise Detailing Home">
+        <a href="#" className="logo-group" aria-label="Sunshine Detailing Home">
           <div className="logo-icon">
             <Sparkles size={24} strokeWidth={2.5} aria-hidden="true" />
           </div>
-          <span>Sunrise<span style={{ color: 'var(--color-accent)' }}>.</span></span>
+          <span>Sunshine<span style={{ color: 'var(--color-accent)' }}>.</span></span>
         </a>
 
         <div className="nav-links">
@@ -447,7 +447,7 @@ const AboutSection = () => {
           <div className="about-text">
             <h2>Born in Texas. Raised on Vinyl & Gasoline.</h2>
             <p>
-              Sunrise Detailing isn't just a business; it's a tribute to the golden age of motoring.
+              Sunshine Detailing isn't just a business; it's a tribute to the golden age of motoring.
               We believe that every car has a story, and our job is to make sure it shines.
               Using traditional techniques combined with modern technology, we treat your vehicle
               with the respect it deserves.
@@ -518,7 +518,7 @@ const Footer = () => {
         <div className="footer-brand">
           <div className="logo-group">
             <Sparkles size={20} color="var(--color-accent)" aria-hidden="true" />
-            <span style={{ color: 'white' }}>Sunrise.</span>
+            <span style={{ color: 'white' }}>Sunshine.</span>
           </div>
           <p>
             Premium auto detailing services in the heart of Texas.
@@ -542,7 +542,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="container footer-bottom">
-        <p>© {currentYear} Sunrise Detailing. All rights reserved.</p>
+        <p>© {currentYear} Sunshine Detailing. All rights reserved.</p>
       </div>
     </footer>
   );
