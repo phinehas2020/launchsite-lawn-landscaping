@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   ArrowRight,
   Check,
-  Clock3,
-  Droplets,
+  Flower2,
   Leaf,
   MapPin,
   Menu,
   Phone,
-  ShieldCheck,
-  Sparkles,
+  Shield,
   Sprout,
   Star,
-  TreePine,
+  Trees,
+  Wrench,
   X,
 } from 'lucide-react';
 import './App.css';
@@ -26,311 +24,260 @@ const site = {
   email: 'hello@evergrovelandscape.com',
   address: '4201 Greenfield Way, Fort Worth, TX 76107',
   mapLink: 'https://maps.google.com/?q=4201+Greenfield+Way+Fort+Worth+TX+76107',
-  serviceArea: 'Fort Worth • Southlake • Arlington • Aledo',
+  serviceArea: 'Fort Worth, Southlake, Arlington, and Aledo',
 };
 
 const navLinks = [
   { label: 'Services', href: '#services' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Process', href: '#process' },
-  { label: 'Plans', href: '#plans' },
-  { label: 'Reviews', href: '#reviews' },
+  { label: 'Recent Work', href: '#work' },
+  { label: 'How We Work', href: '#process' },
+  { label: 'Pricing', href: '#pricing' },
   { label: 'Contact', href: '#contact' },
 ];
 
-const metrics = [
-  { value: '1,250+', label: 'Properties Elevated' },
-  { value: '14 Years', label: 'Local Craft Experience' },
-  { value: '4.9/5', label: 'Average Client Rating' },
-  { value: '24h', label: 'Estimate Turnaround' },
+const trustItems = [
+  { label: 'Local crews only', value: 'No subcontractors' },
+  { label: 'Response time', value: 'Within 1 business day' },
+  { label: 'Average client tenure', value: '3.8 years' },
 ];
 
-const services = [
+const serviceBlocks = [
   {
     icon: Sprout,
-    title: 'Estate Lawn Stewardship',
-    description:
-      'Precision mowing, edge geometry, fertilization, and weekly horticulture checks that keep curb appeal effortless.',
-    highlights: [
-      'Weekly or bi-weekly visits',
-      'Seasonal turf tuning',
-      'Photo updates after every service',
+    title: 'Lawn Care',
+    intro:
+      'Weekly mowing, edge work, seasonal feed, and cleanups delivered by the same neighborhood crew each visit.',
+    bullets: [
+      'Weekly and bi-weekly routes',
+      'Blade-height tuning by season',
+      'Digital visit notes and photos',
     ],
   },
   {
-    icon: TreePine,
-    title: 'Landscape Design + Build',
-    description:
-      'From concept sketches to installation day, we shape memorable outdoor spaces with layered planting and stonework.',
-    highlights: [
-      '3D concept previews',
-      'Native + drought-wise palettes',
-      'Hardscape, lighting, and grading',
-    ],
+    icon: Flower2,
+    title: 'Landscape Install',
+    intro:
+      'Planting plans, bed reshaping, and hardscape accents built to match your architecture and water conditions.',
+    bullets: ['Plant sourcing included', 'Drainage-first planning', 'Clean install and haul-off'],
   },
   {
-    icon: Droplets,
-    title: 'Irrigation Intelligence',
-    description:
-      'Smart-zone irrigation setup and optimization that keeps your property lush while reducing wasted water.',
-    highlights: [
-      'Controller diagnostics',
-      'Seasonal run-time calibration',
-      'Leak and pressure correction',
-    ],
+    icon: Wrench,
+    title: 'Irrigation + Repair',
+    intro:
+      'Controller upgrades, valve repairs, leak diagnosis, and smart scheduling to protect turf without waste.',
+    bullets: ['Controller optimization', 'Zone balancing', 'Water bill reduction checks'],
   },
 ];
 
-const projects = [
+const featuredWork = [
   {
-    name: 'Modern Prairie Estate',
-    location: 'Westover Hills',
-    category: 'Full Design + Build',
+    title: 'Courtyard Refresh',
+    area: 'Westover Hills',
+    note: 'Low-water plant palette + limestone edging',
     image:
-      'https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&w=1400&q=80',
+      'https://images.unsplash.com/photo-1623050780546-67f6f7f7c8d2?auto=format&fit=crop&w=1500&q=80',
   },
   {
-    name: 'Poolside Botanical Retreat',
-    location: 'Southlake',
-    category: 'Planting + Lighting',
+    title: 'Poolside Makeover',
+    area: 'Southlake',
+    note: 'Lighting, ornamental grasses, and privacy planting',
     image:
-      'https://images.unsplash.com/photo-1593696140826-c58b021acf8b?auto=format&fit=crop&w=1400&q=80',
+      'https://images.unsplash.com/photo-1617104551722-3b2d513664d0?auto=format&fit=crop&w=1500&q=80',
   },
   {
-    name: 'Front Yard Statement Garden',
-    location: 'Arlington',
-    category: 'Curb Appeal Refresh',
+    title: 'Front Curb Upgrade',
+    area: 'Arlington',
+    note: 'Native shrubs + fresh bed geometry',
     image:
-      'https://images.unsplash.com/photo-1567684014761-b65e2e59b9eb?auto=format&fit=crop&w=1400&q=80',
+      'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1500&q=80',
   },
 ];
 
-const process = [
+const processSteps = [
   {
     step: '01',
-    title: 'On-site Vision Session',
+    title: 'Walkthrough',
     description:
-      'We walk your property, map sunlight, drainage, and usage zones, then align the design to your lifestyle.',
+      'We visit the property, discuss pain points, and note sun, drainage, and maintenance expectations.',
   },
   {
     step: '02',
-    title: 'Design + Material Strategy',
+    title: 'Written plan',
     description:
-      'You receive a detailed plan with plant species, material palette, and phased investment options.',
+      'You receive a plain-language estimate with options, timeline, and material notes. No vague line items.',
   },
   {
     step: '03',
-    title: 'Crafted Installation',
+    title: 'Build + maintain',
     description:
-      'Our crew executes with surgical detail, then performs final refinement and handoff walkthrough.',
-  },
-  {
-    step: '04',
-    title: 'Ongoing Care',
-    description:
-      'We maintain the system so your landscape matures beautifully in every season.',
+      'Work is scheduled, completed, then protected with a recurring maintenance cadence if you want continuity.',
   },
 ];
 
-const plans = [
+const pricing = [
   {
-    name: 'Signature Care',
-    price: '$320/mo',
-    summary: 'For homes that want pristine consistency.',
-    features: ['Weekly service visits', 'Seasonal color rotation', 'Irrigation monitoring'],
+    name: 'Routine Care',
+    price: '$280/mo',
+    description: 'For homes that want weekly polish and reliable communication.',
+    features: ['Weekly mowing + edging', 'Seasonal treatment plan', 'Monthly quality walkthrough'],
   },
   {
-    name: 'Estate Concierge',
-    price: '$590/mo',
-    summary: 'Our highest-touch maintenance experience.',
+    name: 'Property Stewardship',
+    price: '$540/mo',
+    description: 'Priority scheduling and deeper horticultural management.',
     features: [
-      'Everything in Signature',
-      'Priority storm-response',
-      'Monthly enhancement crew',
-      'Dedicated account lead',
+      'Everything in Routine Care',
+      'Priority weather-response visits',
+      'Quarterly enhancement installs',
+      'Dedicated service lead',
     ],
     featured: true,
   },
   {
-    name: 'Design Sprint',
-    price: '$1,800+',
-    summary: 'Transform one key zone in 2-3 weeks.',
-    features: ['Rapid design workshop', 'Install-ready plan set', 'Material sourcing and build crew'],
+    name: 'One-Time Project',
+    price: '$1,500+',
+    description: 'Focused redesigns for a front yard, backyard zone, or bed reset.',
+    features: ['Site planning session', 'Material and plant sourcing', 'Install with full cleanup'],
   },
 ];
 
-const testimonials = [
+const reviews = [
   {
-    name: 'Lauren W.',
+    name: 'Andrea M.',
     area: 'Tanglewood',
     quote:
-      'Our yard looks like a boutique resort now. The team is punctual, sharp, and obsessed with detail in the best way.',
+      'They fixed a drainage issue two other companies missed. The yard finally looks intentional, not patched together.',
   },
   {
-    name: 'Marcus P.',
+    name: 'Derrick L.',
     area: 'Aledo',
     quote:
-      'They redesigned our slope and solved drainage issues that had plagued us for years. The result is unreal.',
-  },
-  {
-    name: 'Sonia R.',
-    area: 'Southlake',
-    quote:
-      'Neighbors literally stop and ask who did our landscaping. Every month it looks more intentional and beautiful.',
+      'Our service is consistent every single week. The communication is clear and the quality is genuinely high.',
   },
 ];
 
 const faqs = [
   {
-    question: 'How quickly can we start?',
+    question: 'Do you require long-term contracts?',
     answer:
-      'Most design or maintenance projects begin within 7-14 days after approval. For full builds, we reserve a dedicated production window.',
+      'No. Most clients stay because the work is consistent, but we keep terms straightforward and month-to-month.',
   },
   {
-    question: 'Do you work with HOA and city requirements?',
+    question: 'Can you work in phases if budget is limited?',
     answer:
-      'Yes. We account for neighborhood guidelines, visibility restrictions, and local irrigation ordinances during planning.',
+      'Yes. We can prioritize high-impact areas first, then phase the rest as time and budget allow.',
   },
   {
-    question: 'Can we phase larger outdoor transformations?',
+    question: 'Do you handle HOA constraints?',
     answer:
-      'Absolutely. We frequently stage projects by zone so the work aligns with your budget and seasonal timing.',
+      'We do. We account for common HOA restrictions while still keeping the design clean and distinctive.',
   },
 ];
 
-const revealUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.68, ease: [0.2, 0.65, 0.3, 0.9] },
-  },
-};
-
-const stagger = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
-};
-
-const MotionArticle = motion.article;
-const MotionDiv = motion.div;
-const MotionFigure = motion.figure;
-const MotionH1 = motion.h1;
-const MotionHeader = motion.header;
-const MotionP = motion.p;
-const MotionUl = motion.ul;
-
-function SectionHeading({ eyebrow, title, body, align = 'left' }) {
+function SectionTitle({ eyebrow, title, body }) {
   return (
-    <MotionHeader
-      className={`section-heading section-heading--${align}`}
-      variants={revealUp}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.35 }}
-    >
-      <p className="section-eyebrow">{eyebrow}</p>
+    <header className="section-title-block">
+      <p className="eyebrow">{eyebrow}</p>
       <h2>{title}</h2>
-      {body ? <p>{body}</p> : null}
-    </MotionHeader>
+      {body ? <p className="section-body">{body}</p> : null}
+    </header>
   );
 }
 
 function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [headerScrolled, setHeaderScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setHeaderScrolled(window.scrollY > 18);
-    const onEscape = (event) => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+    };
+
+    const onResize = () => {
+      if (window.innerWidth >= 960) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    const onKeyDown = (event) => {
       if (event.key === 'Escape') {
-        setMenuOpen(false);
+        setMobileMenuOpen(false);
       }
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('keydown', onEscape);
+    window.addEventListener('resize', onResize);
+    window.addEventListener('keydown', onKeyDown);
 
     return () => {
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('keydown', onEscape);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+
     return () => {
       document.body.style.overflow = '';
     };
-  }, [menuOpen]);
-
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth >= 980) {
-        setMenuOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, []);
+  }, [mobileMenuOpen]);
 
   const year = new Date().getFullYear();
 
   return (
-    <div className="page-shell">
+    <div className="site-shell">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
 
-      <header className={`site-header ${headerScrolled ? 'site-header--scrolled' : ''}`}>
-        <div className="container header-row">
+      <header className={`site-header ${scrolled ? 'site-header--scrolled' : ''}`}>
+        <div className="container header-inner">
           <a href="#top" className="brand" aria-label={`${site.name} home`}>
-            <span className="brand-icon" aria-hidden="true">
+            <span className="brand-mark" aria-hidden="true">
               <Leaf size={16} />
             </span>
-            <span className="brand-text">{site.shortName}</span>
+            <span className="brand-word">{site.shortName}</span>
           </a>
 
           <nav className="desktop-nav" aria-label="Primary">
-            {navLinks.map((link) => (
-              <a key={link.label} href={link.href}>
-                {link.label}
+            {navLinks.map((item) => (
+              <a key={item.href} href={item.href}>
+                {item.label}
               </a>
             ))}
           </nav>
 
-          <a href="#contact" className="btn btn--ghost desktop-cta">
-            Book consultation
+          <a href="#contact" className="button button--outline desktop-cta">
+            Request estimate
           </a>
 
           <button
             type="button"
             className="mobile-toggle"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
-            aria-expanded={menuOpen}
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
-        <div id="mobile-menu" className={`mobile-nav ${menuOpen ? 'mobile-nav--open' : ''}`}>
-          <nav aria-label="Mobile primary" className="mobile-nav-links">
-            {navLinks.map((link) => (
-              <a key={link.label} href={link.href} onClick={() => setMenuOpen(false)}>
-                {link.label}
+        <div id="mobile-menu" className={`mobile-nav ${mobileMenuOpen ? 'mobile-nav--open' : ''}`}>
+          <nav className="container mobile-nav-list" aria-label="Mobile primary">
+            {navLinks.map((item) => (
+              <a key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                {item.label}
               </a>
             ))}
-            <a href="#contact" className="btn btn--primary" onClick={() => setMenuOpen(false)}>
-              Request estimate <ArrowRight size={16} />
+            <a
+              href="#contact"
+              className="button button--solid"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Start consultation <ArrowRight size={16} />
             </a>
           </nav>
         </div>
@@ -338,221 +285,174 @@ function App() {
 
       <main id="main-content">
         <section id="top" className="hero">
-          <div className="hero-glow" aria-hidden="true" />
+          <div className="container hero-layout">
+            <div className="hero-copy">
+              <p className="eyebrow">Residential lawn and landscape specialists</p>
+              <h1>
+                Clean lines.
+                <br />
+                Healthy turf.
+                <br />
+                Better curb appeal.
+              </h1>
+              <p className="hero-text">
+                We help homeowners keep their outdoor spaces sharp year-round. No overpromises,
+                no mystery invoices, and no rotating crews that forget your property.
+              </p>
 
-          <div className="container hero-grid">
-            <MotionDiv className="hero-copy" variants={stagger} initial="hidden" animate="show">
-              <MotionP className="hero-eyebrow" variants={revealUp}>
-                Award-level landscaping for modern homes
-              </MotionP>
-
-              <MotionH1 variants={revealUp}>
-                We sculpt lawns into
-                <span> living landmarks.</span>
-              </MotionH1>
-
-              <MotionP className="hero-description" variants={revealUp}>
-                Evergrove combines architectural planting, intelligent irrigation, and meticulous lawn
-                stewardship so your exterior feels as curated as your interior.
-              </MotionP>
-
-              <MotionDiv className="hero-actions" variants={revealUp}>
-                <a href="#contact" className="btn btn--primary">
-                  Start your transformation <ArrowRight size={16} />
+              <div className="hero-actions">
+                <a href="#contact" className="button button--solid">
+                  Book a walkthrough <ArrowRight size={16} />
                 </a>
-                <a href="#projects" className="btn btn--ghost">
-                  Explore projects
+                <a href="#work" className="button button--outline">
+                  View recent work
                 </a>
-              </MotionDiv>
+              </div>
 
-              <MotionUl className="hero-trust" variants={revealUp}>
+              <ul className="hero-checks">
                 <li>
-                  <ShieldCheck size={16} aria-hidden="true" />
-                  Licensed + insured crews
+                  <Shield size={16} aria-hidden="true" />
+                  Licensed and insured
                 </li>
                 <li>
-                  <Clock3 size={16} aria-hidden="true" />
-                  Same-week consultations
+                  <Trees size={16} aria-hidden="true" />
+                  Horticulture-trained team leads
                 </li>
-                <li>
-                  <Sparkles size={16} aria-hidden="true" />
-                  White-glove property care
-                </li>
-              </MotionUl>
-            </MotionDiv>
+              </ul>
+            </div>
 
-            <MotionFigure
-              className="hero-visual"
-              initial={{ opacity: 0, scale: 0.96, y: 24 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.2, 0.65, 0.3, 0.9], delay: 0.14 }}
-            >
+            <figure className="hero-image-wrap">
               <img
-                src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1500&q=80"
-                alt="Architectural backyard landscaping with layered planting and stone path"
-                width="1500"
-                height="1100"
+                src="https://images.unsplash.com/photo-1558904541-efa843a96f01?auto=format&fit=crop&w=1600&q=80"
+                alt="Well-maintained residential lawn with structured planting beds"
+                width="1600"
+                height="1200"
                 loading="eager"
                 fetchPriority="high"
               />
-
-              <figcaption className="hero-stat-card">
-                <span>Signature design install</span>
-                <strong>$120K estate refresh delivered in 23 days</strong>
+              <figcaption>
+                <strong>Fort Worth route crew</strong>
+                <span>Weekly service logs and photo updates included</span>
               </figcaption>
-
-              <div className="hero-badge" aria-label="Client rating">
-                <Star size={16} fill="currentColor" />
-                4.9 average score
-              </div>
-            </MotionFigure>
+            </figure>
           </div>
 
-          <div className="container metric-grid" aria-label="Company highlights">
-            {metrics.map((metric) => (
-              <article key={metric.label} className="metric-card">
-                <strong>{metric.value}</strong>
-                <span>{metric.label}</span>
+          <div className="container trust-grid" aria-label="Trust markers">
+            {trustItems.map((item) => (
+              <article key={item.label} className="trust-card">
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
               </article>
             ))}
           </div>
         </section>
 
-        <section id="services" className="section section--muted">
+        <section id="services" className="section section--alt">
           <div className="container">
-            <SectionHeading
-              eyebrow="What we do"
-              title="Landscape services engineered for wow-factor and longevity"
-              body="Every service is built to improve immediate beauty, long-term plant health, and day-to-day usability of your outdoor space."
+            <SectionTitle
+              eyebrow="Services"
+              title="A practical service mix that keeps your property looking intentional"
+              body="We focus on fundamentals done well, then layer in enhancements where they actually add value."
             />
 
-            <MotionDiv
-              className="service-grid"
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              {services.map((service) => {
+            <div className="service-grid">
+              {serviceBlocks.map((service) => {
                 const Icon = service.icon;
 
                 return (
-                  <MotionArticle key={service.title} className="service-card" variants={revealUp}>
+                  <article key={service.title} className="service-card">
                     <span className="service-icon" aria-hidden="true">
                       <Icon size={20} />
                     </span>
                     <h3>{service.title}</h3>
-                    <p>{service.description}</p>
+                    <p>{service.intro}</p>
                     <ul>
-                      {service.highlights.map((item) => (
+                      {service.bullets.map((item) => (
                         <li key={item}>
                           <Check size={14} aria-hidden="true" />
                           {item}
                         </li>
                       ))}
                     </ul>
-                  </MotionArticle>
+                  </article>
                 );
               })}
-            </MotionDiv>
+            </div>
           </div>
         </section>
 
-        <section id="projects" className="section projects">
+        <section id="work" className="section">
           <div className="container">
-            <SectionHeading
-              eyebrow="Featured work"
-              title="Projects that stop scrolls and turn heads in real life"
-              body="Each property receives a custom visual language driven by architecture, maintenance goals, and seasonal color rhythm."
+            <SectionTitle
+              eyebrow="Recent work"
+              title="Three recent projects with very different goals"
+              body="The right landscape depends on how you use the property, not on repeating the same template every time."
             />
 
-            <MotionDiv
-              className="project-grid"
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              {projects.map((project, index) => (
-                <MotionArticle
-                  key={project.name}
-                  className={`project-card ${index === 0 ? 'project-card--wide' : ''}`}
-                  variants={revealUp}
+            <div className="work-grid">
+              {featuredWork.map((project, index) => (
+                <article
+                  key={project.title}
+                  className={`work-card ${index === 0 ? 'work-card--wide' : ''}`}
                 >
                   <img
                     src={project.image}
-                    alt={`${project.name} landscaping project`}
+                    alt={`${project.title} landscaping project in ${project.area}`}
+                    width="1500"
+                    height="1100"
                     loading="lazy"
-                    width="1400"
-                    height="1000"
                   />
-                  <div className="project-overlay" />
-                  <div className="project-content">
-                    <p>{project.category}</p>
-                    <h3>{project.name}</h3>
+                  <div className="work-overlay" />
+                  <div className="work-content">
+                    <p>{project.note}</p>
+                    <h3>{project.title}</h3>
                     <span>
                       <MapPin size={14} aria-hidden="true" />
-                      {project.location}
+                      {project.area}
                     </span>
                   </div>
-                </MotionArticle>
+                </article>
               ))}
-            </MotionDiv>
+            </div>
           </div>
         </section>
 
-        <section id="process" className="section section--muted">
+        <section id="process" className="section section--alt">
           <div className="container">
-            <SectionHeading
-              eyebrow="Our method"
-              title="A clear process built around craftsmanship, communication, and speed"
-              body="No vague timelines. No chaotic crews. You get a structured delivery process from discovery through long-term care."
+            <SectionTitle
+              eyebrow="How we work"
+              title="A straightforward process so you always know what comes next"
             />
 
-            <MotionDiv
-              className="process-grid"
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.25 }}
-            >
-              {process.map((item) => (
-                <MotionArticle key={item.step} className="process-card" variants={revealUp}>
-                  <span className="process-step">{item.step}</span>
+            <div className="process-grid">
+              {processSteps.map((item) => (
+                <article key={item.step} className="process-card">
+                  <span>{item.step}</span>
                   <h3>{item.title}</h3>
                   <p>{item.description}</p>
-                </MotionArticle>
+                </article>
               ))}
-            </MotionDiv>
+            </div>
           </div>
         </section>
 
-        <section id="plans" className="section plans">
+        <section id="pricing" className="section">
           <div className="container">
-            <SectionHeading
-              eyebrow="Plans + pricing"
-              title="Choose the level of attention your landscape deserves"
-              body="Simple packages that cover maintenance, concierge-level care, and focused transformation projects."
-              align="center"
+            <SectionTitle
+              eyebrow="Pricing"
+              title="Service plans sized for routine care or deeper stewardship"
             />
 
-            <MotionDiv
-              className="plan-grid"
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              {plans.map((plan) => (
-                <MotionArticle
+            <div className="pricing-grid">
+              {pricing.map((plan) => (
+                <article
                   key={plan.name}
-                  className={`plan-card ${plan.featured ? 'plan-card--featured' : ''}`}
-                  variants={revealUp}
+                  className={`pricing-card ${plan.featured ? 'pricing-card--featured' : ''}`}
                 >
-                  {plan.featured ? <span className="plan-badge">Most Popular</span> : null}
+                  {plan.featured ? <span className="badge">Most chosen</span> : null}
                   <h3>{plan.name}</h3>
                   <strong>{plan.price}</strong>
-                  <p>{plan.summary}</p>
+                  <p>{plan.description}</p>
                   <ul>
                     {plan.features.map((feature) => (
                       <li key={feature}>
@@ -561,58 +461,56 @@ function App() {
                       </li>
                     ))}
                   </ul>
-                </MotionArticle>
+                </article>
               ))}
-            </MotionDiv>
+            </div>
           </div>
         </section>
 
-        <section id="reviews" className="section section--muted">
-          <div className="container">
-            <SectionHeading
-              eyebrow="Client voice"
-              title="Loved by homeowners who care about beautiful, livable exteriors"
-              align="center"
-            />
+        <section className="section section--alt">
+          <div className="container review-layout">
+            <div>
+              <SectionTitle
+                eyebrow="Client feedback"
+                title="What homeowners say after the first few months"
+              />
+              <div className="rating-inline">
+                <div className="stars" aria-label="Five star rating">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Star key={index} size={15} fill="currentColor" />
+                  ))}
+                </div>
+                <span>4.9 average from long-term clients</span>
+              </div>
+            </div>
 
-            <MotionDiv
-              className="testimonial-grid"
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-            >
-              {testimonials.map((testimonial) => (
-                <MotionArticle key={testimonial.name} className="testimonial-card" variants={revealUp}>
-                  <div className="stars" aria-label="Five stars">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <Star key={`${testimonial.name}-${index}`} size={15} fill="currentColor" />
-                    ))}
-                  </div>
-                  <p>“{testimonial.quote}”</p>
+            <div className="review-list">
+              {reviews.map((review) => (
+                <article key={review.name} className="review-card">
+                  <p>“{review.quote}”</p>
                   <footer>
-                    <strong>{testimonial.name}</strong>
-                    <span>{testimonial.area}</span>
+                    <strong>{review.name}</strong>
+                    <span>{review.area}</span>
                   </footer>
-                </MotionArticle>
+                </article>
               ))}
-            </MotionDiv>
+            </div>
           </div>
         </section>
 
-        <section className="section faq">
-          <div className="container faq-grid">
-            <SectionHeading
+        <section className="section">
+          <div className="container faq-layout">
+            <SectionTitle
               eyebrow="FAQ"
-              title="Questions homeowners ask before we begin"
-              body="Need more detail? We can walk your property and provide a custom roadmap in one consultation."
+              title="Common questions before we start"
+              body="If your property has unusual grading, runoff, or shade constraints, we can evaluate that during the walkthrough."
             />
 
             <div className="faq-list">
-              {faqs.map((faq) => (
-                <details key={faq.question}>
-                  <summary>{faq.question}</summary>
-                  <p>{faq.answer}</p>
+              {faqs.map((item) => (
+                <details key={item.question}>
+                  <summary>{item.question}</summary>
+                  <p>{item.answer}</p>
                 </details>
               ))}
             </div>
@@ -621,31 +519,18 @@ function App() {
 
         <section id="contact" className="section contact">
           <div className="container contact-panel">
-            <MotionDiv
-              className="contact-copy"
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.35 }}
-            >
-              <p className="section-eyebrow">Get started</p>
-              <h2>Let’s make your exterior impossible to ignore.</h2>
+            <div>
+              <p className="eyebrow">Contact</p>
+              <h2>Tell us about your property and what you want to improve.</h2>
               <p>
-                Tell us what you want to change and we will send a scoped estimate within one business
-                day.
+                We’ll schedule a walkthrough, then send a clear estimate with timing and scope.
               </p>
-              <a href={`tel:${site.phoneHref}`} className="btn btn--light">
+              <a href={`tel:${site.phoneHref}`} className="button button--light">
                 Call {site.phone}
               </a>
-            </MotionDiv>
+            </div>
 
-            <MotionDiv
-              className="contact-details"
-              variants={revealUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.35 }}
-            >
+            <div className="contact-links">
               <a href={`tel:${site.phoneHref}`}>
                 <Phone size={16} aria-hidden="true" />
                 {site.phone}
@@ -656,40 +541,40 @@ function App() {
                 {site.address}
               </a>
               <p>{site.serviceArea}</p>
-            </MotionDiv>
+            </div>
           </div>
         </section>
       </main>
 
       <footer className="site-footer">
-        <div className="container footer-grid">
+        <div className="container footer-inner">
           <div>
-            <a href="#top" className="brand brand--footer" aria-label={`${site.name} home`}>
-              <span className="brand-icon" aria-hidden="true">
+            <a href="#top" className="brand" aria-label={`${site.name} home`}>
+              <span className="brand-mark" aria-hidden="true">
                 <Leaf size={16} />
               </span>
-              <span className="brand-text">{site.shortName}</span>
+              <span className="brand-word">{site.shortName}</span>
             </a>
             <p>
-              Premium lawn stewardship, refined landscape design, and world-class curb appeal for
-              discerning homeowners.
+              Thoughtful lawn maintenance and landscape work for homeowners who want clean,
+              reliable results.
             </p>
           </div>
 
-          <nav aria-label="Footer navigation" className="footer-links">
-            {navLinks.map((link) => (
-              <a key={link.label} href={link.href}>
-                {link.label}
+          <nav className="footer-nav" aria-label="Footer navigation">
+            {navLinks.map((item) => (
+              <a key={item.href} href={item.href}>
+                {item.label}
               </a>
             ))}
           </nav>
         </div>
 
-        <div className="container footer-bottom">
+        <div className="container footer-meta">
           <span>
-            © {year} {site.name}. All rights reserved.
+            © {year} {site.name}
           </span>
-          <span>Built for performance, accessibility, and modern browsers.</span>
+          <span>Built to load fast and stay maintainable.</span>
         </div>
       </footer>
     </div>
