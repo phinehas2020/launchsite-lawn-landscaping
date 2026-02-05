@@ -1,15 +1,21 @@
-/* Global Refsets & Utilities */
-
 :root {
-  /* Scrollbar - kept from previous because it's nice */
-  --scrollbar-track: #fbfbfb;
-  --scrollbar-thumb: #cfd8dc;
-  --scrollbar-hover: #90a4ae;
+  --scrollbar-track: #08150f;
+  --scrollbar-thumb: #2e6140;
+  --scrollbar-hover: #3f895a;
 }
 
-/* Custom Scrollbar */
+* {
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 11px;
+  height: 11px;
 }
 
 ::-webkit-scrollbar-track {
@@ -18,13 +24,10 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
-  border-radius: 5px;
+  border-radius: 999px;
+  border: 2px solid var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-hover);
-}
-
-html {
-  scroll-behavior: smooth;
 }

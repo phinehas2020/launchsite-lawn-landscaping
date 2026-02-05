@@ -1,645 +1,697 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import {
-  Car,
-  Sparkles,
-  ShieldCheck,
+  ArrowRight,
+  Check,
+  Clock3,
+  Droplets,
+  Leaf,
   MapPin,
-  Phone,
-  Mail,
-  ChevronRight,
-  Star,
   Menu,
+  Phone,
+  ShieldCheck,
+  Sparkles,
+  Sprout,
+  Star,
+  TreePine,
   X,
-  Check
 } from 'lucide-react';
 import './App.css';
 
 const site = {
-  name: 'Sunshine Detailing',
-  shortName: 'Sunshine',
-  phone: '(254) 900-4049',
-  phoneHref: '+12549004049',
-  address: '2417 N Katy Rd, Elm Mott, TX',
-  mapLink: 'https://maps.google.com/?q=2417+N+Katy+Rd+Elm+Mott+TX+76640',
-  email: 'danielphillips1206@icloud.com',
-  city: 'Elm Mott',
-  state: 'Texas',
-  years: '5+',
-  cars: '1k+'
+  name: 'Evergrove Lawn + Landscape',
+  shortName: 'Evergrove',
+  phone: '(817) 555-0142',
+  phoneHref: '+18175550142',
+  email: 'hello@evergrovelandscape.com',
+  address: '4201 Greenfield Way, Fort Worth, TX 76107',
+  mapLink: 'https://maps.google.com/?q=4201+Greenfield+Way+Fort+Worth+TX+76107',
+  serviceArea: 'Fort Worth • Southlake • Arlington • Aledo',
 };
 
 const navLinks = [
-  { name: 'Services', href: '#services' },
-  { name: 'Process', href: '#process' },
-  { name: 'Packages', href: '#packages' },
-  { name: 'About', href: '#about' },
-  { name: 'Reviews', href: '#reviews' }
+  { label: 'Services', href: '#services' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Process', href: '#process' },
+  { label: 'Plans', href: '#plans' },
+  { label: 'Reviews', href: '#reviews' },
+  { label: 'Contact', href: '#contact' },
 ];
 
-const heroHighlights = [
-  {
-    title: '5.0 Rating',
-    desc: '120+ verified reviews'
-  },
-  {
-    title: 'Insured & Certified',
-    desc: 'Paint-safe, studio-grade tools'
-  },
-  {
-    title: 'Mobile Concierge',
-    desc: 'We bring water, power, and shade'
-  }
+const metrics = [
+  { value: '1,250+', label: 'Properties Elevated' },
+  { value: '14 Years', label: 'Local Craft Experience' },
+  { value: '4.9/5', label: 'Average Client Rating' },
+  { value: '24h', label: 'Estimate Turnaround' },
 ];
 
 const services = [
   {
-    title: 'Paint Correction',
-    desc: 'Eliminating swirls, scratches, and oxidation to reveal pure reflection.',
-    icon: <Car size={28} aria-hidden="true" />
+    icon: Sprout,
+    title: 'Estate Lawn Stewardship',
+    description:
+      'Precision mowing, edge geometry, fertilization, and weekly horticulture checks that keep curb appeal effortless.',
+    highlights: [
+      'Weekly or bi-weekly visits',
+      'Seasonal turf tuning',
+      'Photo updates after every service',
+    ],
   },
   {
-    title: 'Interior Deep Clean',
-    desc: 'Leather conditioning, steam cleaning, and meticulous extraction.',
-    icon: <Sparkles size={28} aria-hidden="true" />
+    icon: TreePine,
+    title: 'Landscape Design + Build',
+    description:
+      'From concept sketches to installation day, we shape memorable outdoor spaces with layered planting and stonework.',
+    highlights: [
+      '3D concept previews',
+      'Native + drought-wise palettes',
+      'Hardscape, lighting, and grading',
+    ],
   },
   {
-    title: 'Ceramic Coating',
-    desc: 'Long-term hydrophobic protection that locks in the shine for years.',
-    icon: <ShieldCheck size={28} aria-hidden="true" />
-  }
+    icon: Droplets,
+    title: 'Irrigation Intelligence',
+    description:
+      'Smart-zone irrigation setup and optimization that keeps your property lush while reducing wasted water.',
+    highlights: [
+      'Controller diagnostics',
+      'Seasonal run-time calibration',
+      'Leak and pressure correction',
+    ],
+  },
 ];
 
-const processSteps = [
+const projects = [
+  {
+    name: 'Modern Prairie Estate',
+    location: 'Westover Hills',
+    category: 'Full Design + Build',
+    image:
+      'https://images.unsplash.com/photo-1598902108854-10e335adac99?auto=format&fit=crop&w=1400&q=80',
+  },
+  {
+    name: 'Poolside Botanical Retreat',
+    location: 'Southlake',
+    category: 'Planting + Lighting',
+    image:
+      'https://images.unsplash.com/photo-1593696140826-c58b021acf8b?auto=format&fit=crop&w=1400&q=80',
+  },
+  {
+    name: 'Front Yard Statement Garden',
+    location: 'Arlington',
+    category: 'Curb Appeal Refresh',
+    image:
+      'https://images.unsplash.com/photo-1567684014761-b65e2e59b9eb?auto=format&fit=crop&w=1400&q=80',
+  },
+];
+
+const process = [
   {
     step: '01',
-    title: 'Inspect & Protect',
-    desc: 'We assess paint depth, trim, and interior materials before starting.'
+    title: 'On-site Vision Session',
+    description:
+      'We walk your property, map sunlight, drainage, and usage zones, then align the design to your lifestyle.',
   },
   {
     step: '02',
-    title: 'Restore & Refine',
-    desc: 'Multi-stage decontamination removes embedded grit and micro-marring.'
+    title: 'Design + Material Strategy',
+    description:
+      'You receive a detailed plan with plant species, material palette, and phased investment options.',
   },
   {
     step: '03',
-    title: 'Seal & Deliver',
-    desc: 'We lock in the finish with durable protection and meticulous finishing touches.'
-  }
-];
-
-const packages = [
-  {
-    name: 'The Daily Driver',
-    price: '$150',
-    description: 'Perfect for regular maintenance.',
-    features: [
-      'Exterior Hand Wash',
-      'Wheel & Tire Detail',
-      'Interior Vacuum',
-      'Windows & Mirrors'
-    ],
-    highlighted: false
+    title: 'Crafted Installation',
+    description:
+      'Our crew executes with surgical detail, then performs final refinement and handoff walkthrough.',
   },
   {
-    name: 'The Enthusiast',
-    price: '$295',
-    description: 'The deep clean your car deserves.',
-    features: [
-      'All Daily Driver Features',
-      'Clay Bar Treatment',
-      '6-Month Sealant',
-      'Leather Conditioning',
-      'Steam Clean Carpets'
-    ],
-    highlighted: true
+    step: '04',
+    title: 'Ongoing Care',
+    description:
+      'We maintain the system so your landscape matures beautifully in every season.',
   },
-  {
-    name: 'The Showroom',
-    price: '$550+',
-    description: 'Complete restoration & protection.',
-    features: [
-      'All Enthusiast Features',
-      '1-Step Paint Correction',
-      'Ceramic Coating (1 Year)',
-      'Engine Bay Detail'
-    ],
-    highlighted: false
-  }
 ];
 
-const values = [
-  'Concierge scheduling with text updates',
-  'Museum-safe products and tools',
-  'Respectful of your time, property, and driveway'
+const plans = [
+  {
+    name: 'Signature Care',
+    price: '$320/mo',
+    summary: 'For homes that want pristine consistency.',
+    features: ['Weekly service visits', 'Seasonal color rotation', 'Irrigation monitoring'],
+  },
+  {
+    name: 'Estate Concierge',
+    price: '$590/mo',
+    summary: 'Our highest-touch maintenance experience.',
+    features: [
+      'Everything in Signature',
+      'Priority storm-response',
+      'Monthly enhancement crew',
+      'Dedicated account lead',
+    ],
+    featured: true,
+  },
+  {
+    name: 'Design Sprint',
+    price: '$1,800+',
+    summary: 'Transform one key zone in 2-3 weeks.',
+    features: ['Rapid design workshop', 'Install-ready plan set', 'Material sourcing and build crew'],
+  },
 ];
 
 const testimonials = [
   {
-    name: 'Alyssa P.',
-    vehicle: '2021 Range Rover',
-    quote: 'They treated my car like a collector piece. The finish looks liquid and the interior smells brand new.'
+    name: 'Lauren W.',
+    area: 'Tanglewood',
+    quote:
+      'Our yard looks like a boutique resort now. The team is punctual, sharp, and obsessed with detail in the best way.',
   },
   {
-    name: 'Miguel R.',
-    vehicle: '2018 Tacoma',
-    quote: 'Professional, on-time, and the ceramic coat survived the whole summer. Worth every dollar.'
+    name: 'Marcus P.',
+    area: 'Aledo',
+    quote:
+      'They redesigned our slope and solved drainage issues that had plagued us for years. The result is unreal.',
   },
   {
-    name: 'Jordan C.',
-    vehicle: '1969 Camaro',
-    quote: 'The before-and-after was unreal. They brought back depth I thought was gone forever.'
-  }
+    name: 'Sonia R.',
+    area: 'Southlake',
+    quote:
+      'Neighbors literally stop and ask who did our landscaping. Every month it looks more intentional and beautiful.',
+  },
 ];
 
-const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+const faqs = [
+  {
+    question: 'How quickly can we start?',
+    answer:
+      'Most design or maintenance projects begin within 7-14 days after approval. For full builds, we reserve a dedicated production window.',
+  },
+  {
+    question: 'Do you work with HOA and city requirements?',
+    answer:
+      'Yes. We account for neighborhood guidelines, visibility restrictions, and local irrigation ordinances during planning.',
+  },
+  {
+    question: 'Can we phase larger outdoor transformations?',
+    answer:
+      'Absolutely. We frequently stage projects by zone so the work aligns with your budget and seasonal timing.',
+  },
+];
 
-  useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') setMobileMenuOpen(false);
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, []);
-
-  return (
-    <nav className="navbar" aria-label="Primary">
-      <div className="container nav-content">
-        <a href="#" className="logo-group" aria-label={`${site.name} Home`}>
-          <div className="logo-icon">
-            <Sparkles size={24} strokeWidth={2.5} aria-hidden="true" />
-          </div>
-          <span className="logo-text">
-            {site.shortName}
-            <span className="accent-dot">.</span>
-          </span>
-        </a>
-
-        <div className="nav-links">
-          {navLinks.map((link) => (
-            <a key={link.name} href={link.href}>
-              {link.name}
-            </a>
-          ))}
-          <a href="#contact" className="btn btn-primary nav-cta">Book Now</a>
-        </div>
-
-        <button
-          className="mobile-toggle"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-menu"
-        >
-          {mobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
-        </button>
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="mobile-menu" role="menu" id="mobile-menu">
-          {navLinks.map((link) => (
-            <a key={link.name} href={link.href} onClick={() => setMobileMenuOpen(false)} role="menuitem">
-              {link.name}
-            </a>
-          ))}
-          <a
-            href="#contact"
-            className="btn btn-primary"
-            style={{ width: '100%', marginTop: 'var(--space-2)' }}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Book Now
-          </a>
-        </div>
-      )}
-    </nav>
-  );
+const revealUp = {
+  hidden: { opacity: 0, y: 28 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.68, ease: [0.2, 0.65, 0.3, 0.9] },
+  },
 };
 
-const Hero = () => {
-  return (
-    <section className="hero" id="home">
-      <div className="container hero-content">
-        <div className="hero-text">
-          <div className="hero-kicker reveal" style={{ '--delay': '0.05s' }}>
-            <Star size={14} fill="currentColor" aria-hidden="true" />
-            <span>{site.city}'s Boutique Auto Care</span>
-          </div>
-          <h1 className="reveal" style={{ '--delay': '0.12s' }}>
-            Crafted shine, <br />
-            delivered to your driveway.
-          </h1>
-          <p className="reveal" style={{ '--delay': '0.2s' }}>
-            Concierge detailing that restores depth, clarity, and protection. We blend old-school
-            technique with modern coatings for a finish that feels brand new.
-          </p>
-          <div className="hero-actions reveal" style={{ '--delay': '0.28s' }}>
-            <a href="#packages" className="btn btn-primary">
-              View Packages <ChevronRight size={18} aria-hidden="true" />
-            </a>
-            <a href="#before-after" className="btn btn-secondary">
-              See Transformations
-            </a>
-          </div>
-          <div className="hero-highlights">
-            {heroHighlights.map((item, index) => (
-              <div
-                key={item.title}
-                className="highlight-card reveal"
-                style={{ '--delay': `${0.36 + index * 0.08}s` }}
-              >
-                <h3>{item.title}</h3>
-                <p>{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="hero-media reveal" style={{ '--delay': '0.24s' }}>
-          <div className="hero-frame">
-            <img
-              src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200"
-              alt="Luxury car with a high-gloss finish after detailing"
-              className="hero-image"
-              width="1000"
-              height="750"
-              loading="eager"
-            />
-            <div className="hero-caption">
-              <div>
-                <span className="caption-label">Trusted Since</span>
-                <strong>2018</strong>
-              </div>
-              <div>
-                <span className="caption-label">Detailing</span>
-                <strong>{site.city}, {site.state}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+const stagger = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
 };
 
-const Services = () => {
+const MotionArticle = motion.article;
+const MotionDiv = motion.div;
+const MotionFigure = motion.figure;
+const MotionH1 = motion.h1;
+const MotionHeader = motion.header;
+const MotionP = motion.p;
+const MotionUl = motion.ul;
+
+function SectionHeading({ eyebrow, title, body, align = 'left' }) {
   return (
-    <section id="services" className="services section tone-muted">
-      <div className="container">
-        <header className="section-header">
-          <p className="section-eyebrow">Our Expertise</p>
-          <h2 className="section-title">Meticulous attention to every panel</h2>
-          <p className="section-intro">
-            Whether it is a weekend classic or your daily driver, our method is designed to protect
-            your investment and elevate every surface.
-          </p>
-        </header>
-
-        <div className="services-grid">
-          {services.map((s, i) => (
-            <article key={i} className="service-card">
-              <div className="icon-box">{s.icon}</div>
-              <h3>{s.title}</h3>
-              <p>{s.desc}</p>
-              <a href="#contact" className="service-card-link">
-                Learn More <ChevronRight size={16} aria-hidden="true" />
-              </a>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
+    <MotionHeader
+      className={`section-heading section-heading--${align}`}
+      variants={revealUp}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.35 }}
+    >
+      <p className="section-eyebrow">{eyebrow}</p>
+      <h2>{title}</h2>
+      {body ? <p>{body}</p> : null}
+    </MotionHeader>
   );
-};
-
-const Process = () => {
-  return (
-    <section id="process" className="section process">
-      <div className="container">
-        <header className="section-header">
-          <p className="section-eyebrow">Our Method</p>
-          <h2 className="section-title">A studio-grade process in three acts</h2>
-        </header>
-
-        <div className="process-grid">
-          {processSteps.map((step) => (
-            <article key={step.step} className="process-card">
-              <div className="process-index">{step.step}</div>
-              <h3>{step.title}</h3>
-              <p>{step.desc}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const BeforeAfter = () => {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const containerRef = useRef(null);
-  const isDragging = useRef(false);
-
-  const handleMove = (clientX) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  };
-
-  const handleMouseDown = () => {
-    isDragging.current = true;
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
-  };
-
-  const handleMouseMove = (e) => {
-    if (isDragging.current) {
-      handleMove(e.clientX);
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    handleMove(e.touches[0].clientX);
-  };
-
-  useEffect(() => {
-    document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
-
-  return (
-    <section id="before-after" className="section before-after">
-      <div className="container">
-        <header className="section-header">
-          <p className="section-eyebrow">The Transformation</p>
-          <h2 className="section-title">See the difference a true detail makes</h2>
-          <p className="section-intro">
-            Drag the slider to reveal the magic of professional detailing.
-          </p>
-        </header>
-
-        <div className="before-after-shell">
-          <div
-            ref={containerRef}
-            className="before-after-container"
-            onMouseDown={handleMouseDown}
-            onTouchMove={handleTouchMove}
-          >
-            <img
-              src="/after-interior.png"
-              alt="After professional detailing"
-              className="before-after-image"
-            />
-
-            <div className="before-layer" style={{ width: `${sliderPosition}%` }}>
-              <img
-                src="/before-interior.png"
-                alt="Before detailing - dirty interior"
-                className="before-after-image"
-                style={{
-                  width: containerRef.current ? containerRef.current.offsetWidth : '100%'
-                }}
-              />
-            </div>
-
-            <div className="slider" style={{ left: `${sliderPosition}%` }}>
-              <div className="slider-handle">
-                <ChevronRight size={16} style={{ transform: 'rotate(180deg)', color: 'var(--color-primary)' }} />
-                <ChevronRight size={16} style={{ color: 'var(--color-primary)' }} />
-              </div>
-            </div>
-
-            <div className="before-after-label before">Before</div>
-            <div className="before-after-label after">After</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Packages = () => {
-  return (
-    <section id="packages" className="section packages tone-muted">
-      <div className="container">
-        <header className="section-header">
-          <p className="section-eyebrow">Packages</p>
-          <h2 className="section-title">Curated packages for every vehicle</h2>
-          <p className="section-intro">Simple pricing. No hidden fees. Just exceptional results.</p>
-        </header>
-
-        <div className="packages-grid">
-          {packages.map((pkg, i) => (
-            <article key={i} className={`package-card ${pkg.highlighted ? 'highlight' : ''}`}>
-              {pkg.highlighted && <div className="package-badge">Most Popular</div>}
-              <h3>{pkg.name}</h3>
-              <div className="price">{pkg.price}</div>
-              <p className="package-description">{pkg.description}</p>
-              <ul className="feature-list">
-                {pkg.features.map((feature, j) => (
-                  <li key={j}>
-                    <Check size={18} aria-hidden="true" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#contact"
-                className={`btn ${pkg.highlighted ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ width: '100%' }}
-              >
-                Select This Plan
-              </a>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const AboutSection = () => {
-  return (
-    <section id="about" className="section about">
-      <div className="container">
-        <div className="about-content">
-          <div className="about-text">
-            <p className="section-eyebrow">Our Story</p>
-            <h2>Born in Texas. Raised on vinyl & gasoline.</h2>
-            <p>
-              {site.shortName} isn&apos;t just a business; it&apos;s a tribute to the golden age of motoring.
-              We believe that every car has a story, and our job is to make sure it shines. Using
-              traditional techniques combined with modern technology, we treat your vehicle with the
-              respect it deserves.
-            </p>
-            <ul className="value-list">
-              {values.map((value) => (
-                <li key={value}>
-                  <Check size={18} aria-hidden="true" />
-                  {value}
-                </li>
-              ))}
-            </ul>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <h4>{site.years}</h4>
-                <span>Years Experience</span>
-              </div>
-              <div className="stat-item">
-                <h4>{site.cars}</h4>
-                <span>Cars Detailed</span>
-              </div>
-            </div>
-          </div>
-          <div className="hero-frame about-frame">
-            <img
-              src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=1000"
-              alt="Professional car detailing in progress"
-              className="about-image"
-              width="900"
-              height="700"
-              loading="lazy"
-            />
-            <div className="hero-caption">
-              <div>
-                <span className="caption-label">Studio</span>
-                <strong>Mobile + Shop</strong>
-              </div>
-              <div>
-                <span className="caption-label">Service Area</span>
-                <strong>Central Texas</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Testimonials = () => {
-  return (
-    <section id="reviews" className="section testimonials tone-muted">
-      <div className="container">
-        <header className="section-header">
-          <p className="section-eyebrow">Client Reviews</p>
-          <h2 className="section-title">The kind words that keep us polishing</h2>
-        </header>
-
-        <div className="testimonials-grid">
-          {testimonials.map((review) => (
-            <article key={review.name} className="testimonial-card">
-              <div className="testimonial-stars" aria-label="Five star rating">
-                {[...Array(5)].map((_, index) => (
-                  <Star key={index} size={16} fill="currentColor" aria-hidden="true" />
-                ))}
-              </div>
-              <p className="testimonial-body">"{review.quote}"</p>
-              <div className="testimonial-meta">
-                <span>{review.name}</span>
-                <span>{review.vehicle}</span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Contact = () => {
-  return (
-    <section id="contact" className="section contact">
-      <div className="container">
-        <div className="banner">
-          <h2>Ready for that new-car feeling?</h2>
-          <p>Schedule your appointment today. Spaces fill up fast.</p>
-          <a href={`tel:${site.phoneHref}`} className="btn">Book Appointment</a>
-
-          <div className="contact-info">
-            <a href={`tel:${site.phoneHref}`} className="contact-item">
-              <Phone size={18} aria-hidden="true" />
-              {site.phone}
-            </a>
-            <a
-              href={site.mapLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-item"
-            >
-              <MapPin size={18} aria-hidden="true" />
-              {site.address}
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
-  return (
-    <footer className="footer">
-      <div className="container footer-content">
-        <div className="footer-brand">
-          <div className="logo-group">
-            <Sparkles size={20} color="var(--color-accent)" aria-hidden="true" />
-            <span className="logo-text" style={{ color: 'white' }}>{site.shortName}.</span>
-          </div>
-          <p>
-            Premium auto detailing services in the heart of Texas.
-            Quality work, honest pricing, and a passion for perfection.
-          </p>
-        </div>
-
-        <nav className="footer-links" aria-label="Footer navigation">
-          <h4>Navigation</h4>
-          {navLinks.map((link) => (
-            <a key={link.name} href={link.href}>{link.name}</a>
-          ))}
-          <a href="#contact">Contact</a>
-        </nav>
-
-        <div className="footer-contact">
-          <h4>Visit Us</h4>
-          <p><MapPin size={16} aria-hidden="true" /> {site.city}, {site.state}</p>
-          <p><Phone size={16} aria-hidden="true" /> {site.phone}</p>
-          <p><Mail size={16} aria-hidden="true" /> {site.email}</p>
-        </div>
-      </div>
-      <div className="container footer-bottom">
-        <p>© {currentYear} {site.name}. All rights reserved.</p>
-      </div>
-    </footer>
-  );
-};
+}
 
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [headerScrolled, setHeaderScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setHeaderScrolled(window.scrollY > 18);
+    const onEscape = (event) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('keydown', onEscape);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('keydown', onEscape);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 980) {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
+  }, []);
+
+  const year = new Date().getFullYear();
+
   return (
-    <div className="page">
-      <a className="skip-link" href="#main">Skip to content</a>
-      <Navbar />
-      <main id="main">
-        <Hero />
-        <Services />
-        <Process />
-        <BeforeAfter />
-        <Packages />
-        <AboutSection />
-        <Testimonials />
-        <Contact />
+    <div className="page-shell">
+      <a className="skip-link" href="#main-content">
+        Skip to content
+      </a>
+
+      <header className={`site-header ${headerScrolled ? 'site-header--scrolled' : ''}`}>
+        <div className="container header-row">
+          <a href="#top" className="brand" aria-label={`${site.name} home`}>
+            <span className="brand-icon" aria-hidden="true">
+              <Leaf size={16} />
+            </span>
+            <span className="brand-text">{site.shortName}</span>
+          </a>
+
+          <nav className="desktop-nav" aria-label="Primary">
+            {navLinks.map((link) => (
+              <a key={link.label} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          <a href="#contact" className="btn btn--ghost desktop-cta">
+            Book consultation
+          </a>
+
+          <button
+            type="button"
+            className="mobile-toggle"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-controls="mobile-menu"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+
+        <div id="mobile-menu" className={`mobile-nav ${menuOpen ? 'mobile-nav--open' : ''}`}>
+          <nav aria-label="Mobile primary" className="mobile-nav-links">
+            {navLinks.map((link) => (
+              <a key={link.label} href={link.href} onClick={() => setMenuOpen(false)}>
+                {link.label}
+              </a>
+            ))}
+            <a href="#contact" className="btn btn--primary" onClick={() => setMenuOpen(false)}>
+              Request estimate <ArrowRight size={16} />
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="main-content">
+        <section id="top" className="hero">
+          <div className="hero-glow" aria-hidden="true" />
+
+          <div className="container hero-grid">
+            <MotionDiv className="hero-copy" variants={stagger} initial="hidden" animate="show">
+              <MotionP className="hero-eyebrow" variants={revealUp}>
+                Award-level landscaping for modern homes
+              </MotionP>
+
+              <MotionH1 variants={revealUp}>
+                We sculpt lawns into
+                <span> living landmarks.</span>
+              </MotionH1>
+
+              <MotionP className="hero-description" variants={revealUp}>
+                Evergrove combines architectural planting, intelligent irrigation, and meticulous lawn
+                stewardship so your exterior feels as curated as your interior.
+              </MotionP>
+
+              <MotionDiv className="hero-actions" variants={revealUp}>
+                <a href="#contact" className="btn btn--primary">
+                  Start your transformation <ArrowRight size={16} />
+                </a>
+                <a href="#projects" className="btn btn--ghost">
+                  Explore projects
+                </a>
+              </MotionDiv>
+
+              <MotionUl className="hero-trust" variants={revealUp}>
+                <li>
+                  <ShieldCheck size={16} aria-hidden="true" />
+                  Licensed + insured crews
+                </li>
+                <li>
+                  <Clock3 size={16} aria-hidden="true" />
+                  Same-week consultations
+                </li>
+                <li>
+                  <Sparkles size={16} aria-hidden="true" />
+                  White-glove property care
+                </li>
+              </MotionUl>
+            </MotionDiv>
+
+            <MotionFigure
+              className="hero-visual"
+              initial={{ opacity: 0, scale: 0.96, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.2, 0.65, 0.3, 0.9], delay: 0.14 }}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1500&q=80"
+                alt="Architectural backyard landscaping with layered planting and stone path"
+                width="1500"
+                height="1100"
+                loading="eager"
+                fetchPriority="high"
+              />
+
+              <figcaption className="hero-stat-card">
+                <span>Signature design install</span>
+                <strong>$120K estate refresh delivered in 23 days</strong>
+              </figcaption>
+
+              <div className="hero-badge" aria-label="Client rating">
+                <Star size={16} fill="currentColor" />
+                4.9 average score
+              </div>
+            </MotionFigure>
+          </div>
+
+          <div className="container metric-grid" aria-label="Company highlights">
+            {metrics.map((metric) => (
+              <article key={metric.label} className="metric-card">
+                <strong>{metric.value}</strong>
+                <span>{metric.label}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="services" className="section section--muted">
+          <div className="container">
+            <SectionHeading
+              eyebrow="What we do"
+              title="Landscape services engineered for wow-factor and longevity"
+              body="Every service is built to improve immediate beauty, long-term plant health, and day-to-day usability of your outdoor space."
+            />
+
+            <MotionDiv
+              className="service-grid"
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {services.map((service) => {
+                const Icon = service.icon;
+
+                return (
+                  <MotionArticle key={service.title} className="service-card" variants={revealUp}>
+                    <span className="service-icon" aria-hidden="true">
+                      <Icon size={20} />
+                    </span>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                    <ul>
+                      {service.highlights.map((item) => (
+                        <li key={item}>
+                          <Check size={14} aria-hidden="true" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </MotionArticle>
+                );
+              })}
+            </MotionDiv>
+          </div>
+        </section>
+
+        <section id="projects" className="section projects">
+          <div className="container">
+            <SectionHeading
+              eyebrow="Featured work"
+              title="Projects that stop scrolls and turn heads in real life"
+              body="Each property receives a custom visual language driven by architecture, maintenance goals, and seasonal color rhythm."
+            />
+
+            <MotionDiv
+              className="project-grid"
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {projects.map((project, index) => (
+                <MotionArticle
+                  key={project.name}
+                  className={`project-card ${index === 0 ? 'project-card--wide' : ''}`}
+                  variants={revealUp}
+                >
+                  <img
+                    src={project.image}
+                    alt={`${project.name} landscaping project`}
+                    loading="lazy"
+                    width="1400"
+                    height="1000"
+                  />
+                  <div className="project-overlay" />
+                  <div className="project-content">
+                    <p>{project.category}</p>
+                    <h3>{project.name}</h3>
+                    <span>
+                      <MapPin size={14} aria-hidden="true" />
+                      {project.location}
+                    </span>
+                  </div>
+                </MotionArticle>
+              ))}
+            </MotionDiv>
+          </div>
+        </section>
+
+        <section id="process" className="section section--muted">
+          <div className="container">
+            <SectionHeading
+              eyebrow="Our method"
+              title="A clear process built around craftsmanship, communication, and speed"
+              body="No vague timelines. No chaotic crews. You get a structured delivery process from discovery through long-term care."
+            />
+
+            <MotionDiv
+              className="process-grid"
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.25 }}
+            >
+              {process.map((item) => (
+                <MotionArticle key={item.step} className="process-card" variants={revealUp}>
+                  <span className="process-step">{item.step}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.description}</p>
+                </MotionArticle>
+              ))}
+            </MotionDiv>
+          </div>
+        </section>
+
+        <section id="plans" className="section plans">
+          <div className="container">
+            <SectionHeading
+              eyebrow="Plans + pricing"
+              title="Choose the level of attention your landscape deserves"
+              body="Simple packages that cover maintenance, concierge-level care, and focused transformation projects."
+              align="center"
+            />
+
+            <MotionDiv
+              className="plan-grid"
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {plans.map((plan) => (
+                <MotionArticle
+                  key={plan.name}
+                  className={`plan-card ${plan.featured ? 'plan-card--featured' : ''}`}
+                  variants={revealUp}
+                >
+                  {plan.featured ? <span className="plan-badge">Most Popular</span> : null}
+                  <h3>{plan.name}</h3>
+                  <strong>{plan.price}</strong>
+                  <p>{plan.summary}</p>
+                  <ul>
+                    {plan.features.map((feature) => (
+                      <li key={feature}>
+                        <Check size={14} aria-hidden="true" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </MotionArticle>
+              ))}
+            </MotionDiv>
+          </div>
+        </section>
+
+        <section id="reviews" className="section section--muted">
+          <div className="container">
+            <SectionHeading
+              eyebrow="Client voice"
+              title="Loved by homeowners who care about beautiful, livable exteriors"
+              align="center"
+            />
+
+            <MotionDiv
+              className="testimonial-grid"
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.2 }}
+            >
+              {testimonials.map((testimonial) => (
+                <MotionArticle key={testimonial.name} className="testimonial-card" variants={revealUp}>
+                  <div className="stars" aria-label="Five stars">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Star key={`${testimonial.name}-${index}`} size={15} fill="currentColor" />
+                    ))}
+                  </div>
+                  <p>“{testimonial.quote}”</p>
+                  <footer>
+                    <strong>{testimonial.name}</strong>
+                    <span>{testimonial.area}</span>
+                  </footer>
+                </MotionArticle>
+              ))}
+            </MotionDiv>
+          </div>
+        </section>
+
+        <section className="section faq">
+          <div className="container faq-grid">
+            <SectionHeading
+              eyebrow="FAQ"
+              title="Questions homeowners ask before we begin"
+              body="Need more detail? We can walk your property and provide a custom roadmap in one consultation."
+            />
+
+            <div className="faq-list">
+              {faqs.map((faq) => (
+                <details key={faq.question}>
+                  <summary>{faq.question}</summary>
+                  <p>{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="section contact">
+          <div className="container contact-panel">
+            <MotionDiv
+              className="contact-copy"
+              variants={revealUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.35 }}
+            >
+              <p className="section-eyebrow">Get started</p>
+              <h2>Let’s make your exterior impossible to ignore.</h2>
+              <p>
+                Tell us what you want to change and we will send a scoped estimate within one business
+                day.
+              </p>
+              <a href={`tel:${site.phoneHref}`} className="btn btn--light">
+                Call {site.phone}
+              </a>
+            </MotionDiv>
+
+            <MotionDiv
+              className="contact-details"
+              variants={revealUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.35 }}
+            >
+              <a href={`tel:${site.phoneHref}`}>
+                <Phone size={16} aria-hidden="true" />
+                {site.phone}
+              </a>
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+              <a href={site.mapLink} target="_blank" rel="noreferrer">
+                <MapPin size={16} aria-hidden="true" />
+                {site.address}
+              </a>
+              <p>{site.serviceArea}</p>
+            </MotionDiv>
+          </div>
+        </section>
       </main>
-      <Footer />
+
+      <footer className="site-footer">
+        <div className="container footer-grid">
+          <div>
+            <a href="#top" className="brand brand--footer" aria-label={`${site.name} home`}>
+              <span className="brand-icon" aria-hidden="true">
+                <Leaf size={16} />
+              </span>
+              <span className="brand-text">{site.shortName}</span>
+            </a>
+            <p>
+              Premium lawn stewardship, refined landscape design, and world-class curb appeal for
+              discerning homeowners.
+            </p>
+          </div>
+
+          <nav aria-label="Footer navigation" className="footer-links">
+            {navLinks.map((link) => (
+              <a key={link.label} href={link.href}>
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div className="container footer-bottom">
+          <span>
+            © {year} {site.name}. All rights reserved.
+          </span>
+          <span>Built for performance, accessibility, and modern browsers.</span>
+        </div>
+      </footer>
     </div>
   );
 }
